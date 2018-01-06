@@ -1,3 +1,4 @@
+from __future__ import division
 import elfi
 from elfi.examples import ma2
 

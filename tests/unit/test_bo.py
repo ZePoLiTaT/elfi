@@ -1,3 +1,4 @@
+from __future__ import division
 import numpy as np
 import pytest
 
@@ -75,8 +76,8 @@ def test_acquisition():
     parameter_names = ['a', 'b']
     bounds = {'a': [-2, 3], 'b': [5, 6]}
     target_model = GPyRegression(parameter_names, bounds=bounds)
-    x1 = np.random.uniform(*bounds['a'], n)
-    x2 = np.random.uniform(*bounds['b'], n)
+    x1 = np.random.uniform(*bounds['a'], size=n)
+    x2 = np.random.uniform(*bounds['b'], size=n)
     x = np.column_stack((x1, x2))
     y = np.random.rand(n)
     target_model.update(x, y)

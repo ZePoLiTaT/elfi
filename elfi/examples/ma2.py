@@ -1,5 +1,5 @@
 """Example implementation of the 2nd order Moving Average (MA2) model."""
-
+from __future__ import division
 from functools import partial
 
 import numpy as np

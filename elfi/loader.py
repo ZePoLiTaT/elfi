@@ -1,5 +1,6 @@
 """Loading makes precomputed data accessible to nodes."""
 
+from __future__ import division
 import numpy as np
 
 from elfi.utils import get_sub_seed, observed_name

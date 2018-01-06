@@ -1,0 +1,11 @@
+Overview of Changes:
+
+Added from __future__ import division to avoid integer division issues
+Ensured all base classes inherit from object
+Ensured that no named parameters are after list parameters
+Changed itertools.count call to next from _ids.__next__() to next(_ids)
+Ensured a string is returned when the NodeReference assigns a new name based on self inspection
+Replaced multiprocessing library with pathos.multiprocess
+Changed makedirs exist_ok flag with if not exist dir -> create
+Created function run in tools to mimic subprocess.run
+Removed special characters in comments of files acquisition.py, posteriors.py, 

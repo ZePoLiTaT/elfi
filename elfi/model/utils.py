@@ -1,9 +1,10 @@
 """Utilities for ElfiModels."""
 
+from __future__ import division
 import numpy as np
 
 
-def rvs_from_distribution(*params, batch_size, distribution, size=None, random_state=None):
+def rvs_from_distribution(*params, **kwargs):
     """Transform the rvs method of a scipy like distribution to an operation in ELFI.
 
     Parameters
@@ -25,6 +26,12 @@ def rvs_from_distribution(*params, batch_size, distribution, size=None, random_s
     Used internally by the RandomVariable to wrap distributions for the framework.
 
     """
+    
+    distribution = kwargs.pop('distribution', None)
+    size = kwargs.pop('size', None)
+    batch_size = kwargs.pop('batch_size', None)
+    random_state = kwargs.pop('random_state', None)
+
     if size is None:
         size = (batch_size, )
     else:
@@ -34,8 +41,10 @@ def rvs_from_distribution(*params, batch_size, distribution, size=None, random_s
     return rvs
 
 
-def distance_as_discrepancy(dist, *summaries, observed):
+def distance_as_discrepancy(dist, *summaries, **kwargs):
     """Evaluate a distance function with signature `dist(summaries, observed)` in ELFI."""
+
+    observed = kwargs.pop('observed', None)
     summaries = np.column_stack(summaries)
     # Ensure observed are 2d
     observed = np.concatenate([np.atleast_2d(o) for o in observed], axis=1)

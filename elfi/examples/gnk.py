@@ -1,5 +1,5 @@
 """Implementation of the univariate g-and-k example model."""
-
+from __future__ import division
 from functools import partial
 
 import numpy as np
@@ -113,7 +113,7 @@ def get_model(n_obs=50, true_params=None, seed=None):
     return m
 
 
-def euclidean_multiss(*simulated, observed):
+def euclidean_multiss(*simulated, **kwargs):
     """Calculate the Euclidean distances merging summary statistics.
 
     The shape of the arrays corresponds to (batch_size, dim_ss, dim_ss_point), where
@@ -130,6 +130,8 @@ def euclidean_multiss(*simulated, observed):
     array_like
 
     """
+    observed = kwargs.pop('observed', None)
+
     pts_sim = simulated[0]
     pts_obs = observed[0]
 

@@ -1,5 +1,5 @@
 """Example implementation of the Ricker model."""
-
+from __future__ import division
 from functools import partial
 
 import numpy as np
@@ -92,7 +92,7 @@ def get_model(n_obs=50, true_params=None, seed_obs=None, stochastic=True):
     and description using 13 summary statistics, see:
 
     Wood, S. N. (2010) Statistical inference for noisy nonlinear ecological dynamic systems,
-    Nature 466, 1102–1107.
+    Nature 466, 1102-1107.
 
     Parameters
     ----------
@@ -144,7 +144,7 @@ def get_model(n_obs=50, true_params=None, seed_obs=None, stochastic=True):
     return m
 
 
-def chi_squared(*simulated, observed):
+def chi_squared(*simulated, **kwargs):
     """Return Chi squared goodness of fit.
 
     Adjusts for differences in magnitude between dimensions.
@@ -155,6 +155,8 @@ def chi_squared(*simulated, observed):
     observed : tuple of np.arrays
 
     """
+    observed = kwargs.pop('observed')
+
     simulated = np.column_stack(simulated)
     observed = np.column_stack(observed)
     d = np.sum((simulated - observed)**2. / observed, axis=1)

@@ -8,6 +8,7 @@ Syst Biol (2017) 66 (1): e66-e82.
 https://doi.org/10.1093/sysbio/syw077
 
 """
+from __future__ import division
 import warnings
 
 import numpy as np

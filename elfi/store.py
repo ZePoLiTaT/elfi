@@ -1,5 +1,6 @@
 """This module contains implementations for storing simulated values for later use."""
 
+from __future__ import division
 import io
 import logging
 import os
@@ -241,7 +242,9 @@ class OutputPool:
             raise ValueError("Pool context is not set, cannot save. Please see the "
                              "set_context method.")
 
-        os.makedirs(self.path, exist_ok=True)
+        #os.makedirs(self.path, exist_ok=True)
+        if not os.path.exists(self.path):
+            os.makedirs(self.path)
 
         # Change the working directory so that relative paths to the pool data folder can
         # be reliably used. This allows moving and renaming of the folder.
@@ -371,13 +374,15 @@ class ArrayPool(OutputPool):
             raise ValueError('ArrayPool has no context set')
 
         # Make the directory for the array pools
-        os.makedirs(self.path, exist_ok=True)
+        #os.makedirs(self.path, exist_ok=True)
+        if not os.path.exists(self.path):
+            os.makedirs(self.path)
 
         filename = os.path.join(self.path, node)
         return NpyStore(filename, self.batch_size)
 
 
-class StoreBase:
+class StoreBase(object):
     """Base class for output stores for the pools.
 
     Stores store the outputs of a single node in ElfiModel. This is a subset of the

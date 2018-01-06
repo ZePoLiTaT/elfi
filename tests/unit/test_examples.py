@@ -1,5 +1,6 @@
 """Simple running tests for examples."""
 
+from __future__ import division
 import os
 
 import pytest

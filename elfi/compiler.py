@@ -1,5 +1,6 @@
 """Compilation augments the ElfiModel with nodes and flags that are required for execution."""
 
+from __future__ import division
 import logging
 
 import networkx as nx

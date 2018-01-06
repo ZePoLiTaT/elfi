@@ -2,7 +2,7 @@
 
 http://ipyparallel.readthedocs.io
 """
-
+from __future__ import division
 import itertools
 import logging
 

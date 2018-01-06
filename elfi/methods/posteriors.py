@@ -1,5 +1,5 @@
 """The module contains implementations of approximate posteriors."""
-
+from __future__ import division
 import logging
 
 import matplotlib.pyplot as plt
@@ -12,8 +12,8 @@ logger = logging.getLogger(__name__)
 
 
 # TODO: separate the likelihood to its own class
-class BolfiPosterior:
-    r"""Container for the approximate posterior in the BOLFI framework.
+class BolfiPosterior(object):
+    """Container for the approximate posterior in the BOLFI framework.
 
     Here the likelihood is defined as
 
@@ -27,7 +27,7 @@ class BolfiPosterior:
     References
     ----------
     Gutmann M U, Corander J (2016). Bayesian Optimization for Likelihood-Free Inference
-    of Simulator-Based Statistical Models. JMLR 17(125):1−47, 2016.
+    of Simulator-Based Statistical Models. JMLR 17(125):1-47, 2016.
     http://jmlr.org/papers/v17/15-017.html
 
     """

@@ -1,5 +1,6 @@
 """This module includes common functions for visualization."""
 
+from __future__ import division
 from collections import OrderedDict
 
 import matplotlib.pyplot as plt

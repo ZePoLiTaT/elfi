@@ -1,5 +1,5 @@
 """This module contains tools for ELFI graphs."""
-
+from __future__ import division
 import subprocess
 from functools import partial
 
@@ -10,7 +10,7 @@ from elfi.utils import get_sub_seed, is_array
 __all__ = ['vectorize', 'external_operation']
 
 
-def run_vectorized(operation, *inputs, constants=None, dtype=None, batch_size=None, **kwargs):
+def run_vectorized(operation, *inputs, **kwargs):
     """Run the operation as if it was vectorized over the individual runs in the batch.
 
     Helper for cases when you have an operation that does not support vector arguments.
@@ -35,6 +35,10 @@ def run_vectorized(operation, *inputs, constants=None, dtype=None, batch_size=No
         If batch_size > 1, a numpy array of outputs is returned
 
     """
+    constants = kwargs.pop('constants', None)
+    dtype = kwargs.pop('dtype', None)
+    batch_size = kwargs.pop('batch_size', None)
+
     constants = [] if constants is None else list(constants)
 
     # Check input and set constants and batch_size if needed
@@ -162,17 +166,17 @@ def prepare_seed(*inputs, **kwinputs):
     return inputs, kwinputs
 
 
-def stdout_to_array(stdout, *inputs, sep=' ', dtype=None, **kwinputs):
+def stdout_to_array(stdout, *inputs, **kwinputs):
+
+    sep = kwinputs.pop('sep', ' ')
+    dtype = kwinputs.pop('dtype', None)
+
     """Convert a single row from stdout to np.array."""
     return np.fromstring(stdout, dtype=dtype, sep=sep)
 
 
 def run_external(command,
                  *inputs,
-                 process_result=None,
-                 prepare_inputs=None,
-                 stdout=True,
-                 subprocess_kwargs=None,
                  **kwinputs):
     """Run an external commmand (e.g. shell script, or executable) on a subprocess.
 
@@ -183,6 +187,11 @@ def run_external(command,
     output
 
     """
+    process_result = kwinputs.pop('process_result', None)
+    prepare_inputs = kwinputs.pop('prepare_inputs', None)
+    stdout = kwinputs.pop('stdout', True)
+    subprocess_kwargs = kwinputs.pop('subprocess_kwargs', None)
+
     inputs, kwinputs = unpack_meta(*inputs, **kwinputs)
     inputs, kwinputs = prepare_seed(*inputs, **kwinputs)
     if prepare_inputs:
@@ -197,12 +206,14 @@ def run_external(command,
 
     subprocess_kwargs_ = dict(shell=True, check=True)
     subprocess_kwargs_.update(subprocess_kwargs or {})
-
+    print(subprocess)
     # Execute
-    completed_process = subprocess.run(command, **subprocess_kwargs_)
+    #completed_process = subprocess.run(command, **subprocess_kwargs_)
+    completed_process, completed_process_stdout, completed_process_stderr = run(command, **subprocess_kwargs_)
 
     if stdout:
-        completed_process = completed_process.stdout
+        #completed_process = completed_process.stdout
+        completed_process = completed_process_stdout
 
     output = process_result(completed_process, *inputs, **kwinputs)
 
@@ -284,3 +295,27 @@ def external_operation(command,
         prepare_inputs=prepare_inputs,
         stdout=stdout,
         subprocess_kwargs=subprocess_kwargs)
+
+
+def run(*popenargs, **kwargs):
+
+    input = kwargs.pop('input', None)
+    check = kwargs.pop('check', False)
+
+    if input is not None:
+        if 'stdin' in kwargs:
+            raise ValueError('stdin and input arguments may not both be used.')
+        kwargs['stdin'] = subprocess.PIPE
+
+    process = subprocess.Popen(*popenargs, **kwargs)
+    try:
+        stdout, stderr = process.communicate(input)
+    except:
+        process.kill()
+        process.wait()
+        raise
+    retcode = process.poll()
+    if check and retcode:
+        raise subprocess.CalledProcessError(
+            retcode, process.args, output=stdout, stderr=stderr)
+    return retcode, stdout, stderr

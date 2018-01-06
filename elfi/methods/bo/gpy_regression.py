@@ -1,7 +1,7 @@
 """This module contains an interface for using the GPy library in ELFI."""
 
 # TODO: make own general GPRegression and kernel classes
-
+from __future__ import division
 import copy
 import logging
 

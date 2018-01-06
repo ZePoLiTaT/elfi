@@ -1,5 +1,5 @@
 """Utilities for Bayesian optimization."""
-
+from __future__ import division
 import numpy as np
 import scipy.optimize
 from scipy.optimize import differential_evolution
@@ -73,7 +73,7 @@ def minimize(fun,
         # TODO: combine with the the bo.acquisition.UniformAcquisition method?
         random_state = random_state or np.random
         for i in range(ndim):
-            start_points[:, i] = random_state.uniform(*bounds[i], n_start_points)
+            start_points[:, i] = random_state.uniform(*bounds[i], size=n_start_points)
     else:
         start_points = prior.rvs(n_start_points, random_state=random_state)
         if len(start_points.shape) == 1:

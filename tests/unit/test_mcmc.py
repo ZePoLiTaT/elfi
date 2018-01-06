@@ -1,5 +1,5 @@
+from __future__ import division
 import numpy as np
-
 from elfi.methods import mcmc
 
 # construct a covariance matrix and calculate the precision matrix

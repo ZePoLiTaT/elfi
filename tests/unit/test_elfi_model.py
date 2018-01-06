@@ -1,3 +1,4 @@
+from __future__ import division
 import os
 
 import numpy as np
@@ -34,7 +35,7 @@ def test_observed():
     assert np.array_equal(S2.observed, S2_observed)
 
 
-def euclidean_discrepancy(*simulated, observed):
+def euclidean_discrepancy(*simulated, **observed):
     """Euclidean discrepancy between data.
 
     Parameters
@@ -47,6 +48,8 @@ def euclidean_discrepancy(*simulated, observed):
     -------
     d : np.array of size (n,)
     """
+    observed = observed.pop('observed')
+
     d = np.linalg.norm(np.column_stack(simulated) - np.column_stack(observed), ord=2, axis=1)
     return d
 
@@ -142,7 +145,8 @@ class TestNodeReference:
         assert set(nodes) == set(nodes2)
 
     def test_become_with_priors(self, ma2):
-        parameters = ma2.parameter_names.copy()
+        #parameters = ma2.parameter_names.copy()
+        parameters = list(ma2.parameter_names)
         parent_names = ma2.get_parents('t1')
 
         ma2['t1'].become(elfi.Prior('uniform', 0, model=ma2))

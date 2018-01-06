@@ -1,11 +1,11 @@
 """This module contains an interface between ELFI and NetworkX."""
-
+from __future__ import division
 from operator import itemgetter
 
 import networkx as nx
 
 
-class GraphicalModel:
+class GraphicalModel(object):
     """Network class for the ElfiModel."""
 
     def __init__(self, source_net=None):

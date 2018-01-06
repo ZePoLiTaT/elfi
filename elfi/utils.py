@@ -1,5 +1,6 @@
 """Common utilities."""
 
+from __future__ import division
 import uuid
 
 import networkx as nx

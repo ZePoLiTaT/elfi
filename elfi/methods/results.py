@@ -1,5 +1,5 @@
 """Containers for results from inference."""
-
+from __future__ import division, unicode_literals, print_function
 import io
 import logging
 import sys
@@ -13,7 +13,7 @@ import elfi.visualization.visualization as vis
 logger = logging.getLogger(__name__)
 
 
-class ParameterInferenceResult:
+class ParameterInferenceResult(object):
     """Base class for results."""
 
     def __init__(self, method_name, outputs, parameter_names, **kwargs):

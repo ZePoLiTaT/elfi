@@ -1,10 +1,9 @@
 """This module implements a simple multiprocessing client."""
-
+from __future__ import division
 import itertools
 import logging
-import multiprocessing
-
 import elfi.client
+from multiprocess import Pool
 
 logger = logging.getLogger(__name__)
 
@@ -27,7 +26,8 @@ class Client(elfi.client.ClientBase):
             Number of worker processes to use. Defaults to os.cpu_count().
 
         """
-        self.pool = multiprocessing.Pool(processes=num_processes)
+        #self.pool = multiprocessing.Pool(processes=num_processes)
+        self.pool = Pool(processes=num_processes)
 
         self.tasks = {}
         self._id_counter = itertools.count()
@@ -45,7 +45,7 @@ class Client(elfi.client.ClientBase):
             Number of the queued task.
 
         """
-        id = self._id_counter.__next__()
+        id = next(self._id_counter)
         async_res = self.pool.apply_async(kallable, args, kwargs)
         self.tasks[id] = async_res
         return id

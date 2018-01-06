@@ -7,7 +7,7 @@ References
   Syst Biol 2017; 66 (1): e66-e82. doi: 10.1093/sysbio/syw077
 
 """
-
+from __future__ import division
 import os
 import warnings
 

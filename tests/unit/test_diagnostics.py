@@ -1,4 +1,5 @@
 """Tests for ABC diagnostics."""
+from __future__ import division
 from functools import partial
 
 import numpy as np

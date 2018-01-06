@@ -1,5 +1,5 @@
 """Methods for ABC diagnostics."""
-
+from __future__ import division
 import logging
 from itertools import combinations
 

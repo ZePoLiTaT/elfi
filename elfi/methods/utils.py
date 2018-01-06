@@ -1,5 +1,5 @@
 """This module contains utilities for methods."""
-
+from __future__ import division
 import logging
 from math import ceil
 

@@ -1,5 +1,5 @@
 """Extensions: ScipyLikeDistribution."""
-
+from __future__ import division
 import numpy as np
 
 
@@ -30,7 +30,7 @@ class ScipyLikeDistribution:
         self._name = name or self.__class__.__name__
 
     @classmethod
-    def rvs(this, *params, size=1, random_state):
+    def rvs(this, *params, **kwargs):
         """Generate random variates.
 
         Parameters
@@ -46,6 +46,9 @@ class ScipyLikeDistribution:
             Random variates of given size.
 
         """
+        size = kwargs.pop('size', 1)
+        random_state = kwargs.pop('random_state', None)
+
         raise NotImplementedError
 
     @classmethod

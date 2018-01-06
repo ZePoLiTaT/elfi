@@ -1,4 +1,5 @@
 """Implementations for acquiring locations of new evidence for Bayesian optimization."""
+from __future__ import division
 
 import logging
 
@@ -12,7 +13,7 @@ from elfi.methods.bo.utils import minimize
 logger = logging.getLogger(__name__)
 
 
-class AcquisitionBase:
+class AcquisitionBase(object):
     """All acquisition functions are assumed to fulfill this interface.
 
     Gaussian noise ~N(0, self.noise_var) is added to the acquired points. By default,
@@ -186,7 +187,7 @@ class LCBSC(AcquisitionBase):
 
     """
 
-    def __init__(self, *args, delta=None, **kwargs):
+    def __init__(self, *args, **kwargs):
         """Initialize LCBSC.
 
         Parameters
@@ -198,6 +199,8 @@ class LCBSC(AcquisitionBase):
         kwargs
 
         """
+        delta = kwargs.pop('delta', None)
+
         if delta is not None:
             if delta <= 0 or delta >= 1:
                 logger.warning('Parameter delta should be in the interval (0,1)')
@@ -216,6 +219,7 @@ class LCBSC(AcquisitionBase):
         # Start from 0
         t += 1
         d = self.model.input_dim
+
         return 2 * np.log(t**(2 * d + 2) * np.pi**2 / (3 * self.delta))
 
     def evaluate(self, x, t=None):
@@ -250,7 +254,7 @@ class LCBSC(AcquisitionBase):
 
 
 class MaxVar(AcquisitionBase):
-    r"""The maximum variance acquisition method.
+    """The maximum variance acquisition method.
 
     The next evaluation point is acquired in the maximiser of the variance of
     the unnormalised approximate posterior.
@@ -268,11 +272,10 @@ class MaxVar(AcquisitionBase):
 
     References
     ----------
-    [1] Järvenpää et al. (2017). arXiv:1704.00520
+    [1] Jarvenpaa et al. (2017). arXiv:1704.00520
     [2] Gutmann M U, Corander J (2016). Bayesian Optimization for
     Likelihood-Free Inference of Simulator-Based Statistical Models.
-    JMLR 17(125):1−47, 2016. http://jmlr.org/papers/v17/15-017.html
-
+    JMLR 17(125):1-47 2016. http://jmlr.org/papers/v17/15-017.html
     """
 
     def __init__(self, quantile_eps=.01, *args, **opts):
@@ -434,7 +437,7 @@ class RandMaxVar(MaxVar):
 
     References
     ----------
-    [1] arXiv:1704.00520 (Järvenpää et al., 2017)
+    [1] arXiv:1704.00520 (Jarvenpaa et al., 2017)
 
     """
 
@@ -573,7 +576,7 @@ class ExpIntVar(MaxVar):
 
     References
     ----------
-    [1] arXiv:1704.00520 (Järvenpää et al., 2017)
+    [1] arXiv:1704.00520 (Jarvenpaa et al., 2017)
 
     """
 
@@ -677,7 +680,7 @@ class ExpIntVar(MaxVar):
 
         # Obtaining the location where the expected loss is minimised.
         # Note: The gradient is computed numerically as GPy currently does not
-        # directly provide the derivative computations used in Järvenpää et al., 2017.
+        # directly provide the derivative computations used in Jarvenpaa et al., 2017.
         theta_min, _ = minimize(self.evaluate,
                                 gp.bounds,
                                 grad=None,
@@ -715,7 +718,7 @@ class ExpIntVar(MaxVar):
             theta_new = theta_new[:, np.newaxis]
 
         # Calculate the integrand term w.
-        # Note: w's second term (given in Järvenpää et al., 2017) is dismissed
+        # Note: w's second term (given in Jarvenpaa et al., 2017) is dismissed
         # because it is constant with respect to theta_new.
         _, var_new = gp.predict(theta_new, noiseless=True)
         k_old_new = self._K(self.thetas_old, theta_new)

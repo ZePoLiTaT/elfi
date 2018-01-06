@@ -1,5 +1,6 @@
 """This module includes the Executor of ELFI graphs."""
 
+from __future__ import division
 import logging
 from operator import itemgetter
 
@@ -8,7 +9,7 @@ import networkx as nx
 logger = logging.getLogger(__name__)
 
 
-class Executor:
+class Executor(object):
     """Responsible for computing the graph G.
 
     The format of the computable graph G is `nx.DiGraph`. The execution order of the nodes
@@ -60,17 +61,20 @@ class Executor:
             attr = G.node[node]
             logger.debug("Executing {}".format(node))
 
-            if attr.keys() >= {'operation', 'output'}:
+            if set(attr.keys()) >= {'operation', 'output'}:
                 raise ValueError('Generative graph has both op and output present for '
                                  'node {}'.format(node))
 
             if 'operation' in attr:
                 op = attr['operation']
+
                 try:
                     G.node[node] = cls._run(op, node, G)
                 except Exception as exc:
+                    import traceback
+                    traceback.print_exc()
                     raise exc.__class__("In executing node '{}': {}."
-                                        .format(node, exc)).with_traceback(exc.__traceback__)
+                                        .format(node, exc))#.with_traceback(exc.__traceback__)
 
             elif 'output' not in attr:
                 raise ValueError('Generative graph has no op or output present for node '
@@ -118,7 +122,8 @@ class Executor:
             dep_graph = nx.DiGraph(G.edges())
             for node in sort_order:
                 attr = G.node[node]
-                if attr.keys() >= {'operation', 'output'}:
+
+                if set(attr.keys()) >= {'operation', 'output'}:
                     raise ValueError('Generative graph has both op and output present')
 
                 # Remove those nodes from the dependency graph whose outputs are present

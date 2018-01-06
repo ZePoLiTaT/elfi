@@ -1,3 +1,4 @@
+from __future__ import division
 import logging
 import os
 import time
@@ -168,8 +169,8 @@ def _get_dependencies_acq_fn():
 
     # Generating the coordinates and the values of the fitting data.
     n_pts_fit = 10
-    x1 = np.random.uniform(*bounds_param['mu_0'], n_pts_fit)
-    x2 = np.random.uniform(*bounds_param['mu_1'], n_pts_fit)
+    x1 = np.random.uniform(*bounds_param['mu_0'], size=n_pts_fit)
+    x2 = np.random.uniform(*bounds_param['mu_1'], size=n_pts_fit)
     x = np.column_stack((x1, x2))
     y = np.random.rand(n_pts_fit)
 
@@ -238,8 +239,9 @@ def distribution_test():
         # With size=None we should get data that is not wrapped to any extra dim
         return attr_none, attr1, attr2
 
-    def run(distribution, *args, rvs=None, **kwargs):
+    def run(distribution, *args, **kwargs):
 
+        rvs = kwargs.pop('rvs', None)
         if rvs is None:
             # Run some tests that ensure outputs are similar to e.g. scipy distributions
             rvs_none = distribution.rvs(*args, size=None, **kwargs)

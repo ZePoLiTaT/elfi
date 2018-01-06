@@ -1,5 +1,5 @@
 """Implementation of the bivariate g-and-k example model."""
-
+from __future__ import division
 from functools import partial
 
 import numpy as np

@@ -6,7 +6,7 @@ Note that if you change anything in this file (e.g. imports), you should change
 the documentation accordingly. For this reason the imports and class definitions
 are inside their respective functions.
 """
-
+from __future__ import division
 
 def test_implementing_new_algorithm():
     import numpy as np

@@ -1,5 +1,5 @@
 """This module implements the native single-core client."""
-
+from __future__ import division
 import itertools
 import logging
 
@@ -38,7 +38,8 @@ class Client(elfi.client.ClientBase):
             Number of the queued task.
 
         """
-        id = self._ids.__next__()
+        #id = self._ids.__next__()
+        id = next(self._ids)
         self.tasks[id] = (kallable, args, kwargs)
         return id
 

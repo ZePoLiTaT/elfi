@@ -6,7 +6,7 @@ the simulator or a summary statistic.
 
 https://en.wikipedia.org/wiki/Directed_acyclic_graph
 """
-
+from __future__ import division
 import inspect
 import logging
 import os
@@ -403,7 +403,10 @@ class ElfiModel(GraphicalModel):
         """
         path = self.name + '.pkl'
         if prefix is not None:
-            os.makedirs(prefix, exist_ok=True)
+            #os.makedirs(prefix, exist_ok=True)
+            if not os.path.exists(prefix):
+                os.makedirs(prefix)
+
             path = os.path.join(prefix, path)
         pickle.dump(self, open(path, "wb"))
 
@@ -441,7 +444,7 @@ class ElfiModel(GraphicalModel):
         return self.get_reference(node_name)
 
 
-class InstructionsMapper:
+class InstructionsMapper(object):
     @property
     def state(self):
         raise NotImplementedError()
@@ -482,7 +485,7 @@ class NodeReference(InstructionsMapper):
 
     """
 
-    def __init__(self, *parents, state=None, model=None, name=None):
+    def __init__(self, *parents, **kwargs):
         """Initialize a NodeReference.
 
         Parameters
@@ -501,6 +504,10 @@ class NodeReference(InstructionsMapper):
         name_1f4rgh
 
         """
+        state = kwargs.pop('state', None)
+        model = kwargs.pop('model', None)
+        name = kwargs.pop('name', None)
+
         state = state or {}
         state['_class'] = self.__class__
         model = self._determine_model(model, parents)
@@ -666,7 +673,7 @@ class NodeReference(InstructionsMapper):
         match = re.match(rex, info.code_context[0])
         if match:
             name = match.groups()[0]
-            return name
+            return str(name)
         else:
             return None
 
@@ -710,8 +717,10 @@ class StochasticMixin(NodeReference):
     Operations of stochastic nodes will receive a `random_state` keyword argument.
     """
 
-    def __init__(self, *parents, state, **kwargs):
+    def __init__(self, *parents, **kwargs):
         # Flag that this node is stochastic
+
+        state = kwargs.pop('state', False)
         state['_stochastic'] = True
         super(StochasticMixin, self).__init__(*parents, state=state, **kwargs)
 
@@ -724,7 +733,11 @@ class ObservableMixin(NodeReference):
     observed value from the observed values of it's parents.
     """
 
-    def __init__(self, *parents, state, observed=None, **kwargs):
+    def __init__(self, *parents, **kwargs):
+
+        state = kwargs.pop('state', None)
+        observed = kwargs.pop('observed', None)
+
         # Flag that this node can be observed
         state['_observable'] = True
         super(ObservableMixin, self).__init__(*parents, state=state, **kwargs)
@@ -778,7 +791,7 @@ class Operation(NodeReference):
 class RandomVariable(StochasticMixin, NodeReference):
     """A node that draws values from a random distribution."""
 
-    def __init__(self, distribution, *params, size=None, **kwargs):
+    def __init__(self, distribution, *params, **kwargs):
         """Initialize a node that represents a random variable.
 
         Parameters
@@ -789,6 +802,8 @@ class RandomVariable(StochasticMixin, NodeReference):
             Output size of a single random draw.
 
         """
+        size = kwargs.pop('size', None)
+
         state = dict(distribution=distribution, size=size, _uses_batch_size=True)
         state['_operation'] = self.compile_operation(state)
         super(RandomVariable, self).__init__(*params, state=state, **kwargs)
@@ -851,7 +866,7 @@ class RandomVariable(StochasticMixin, NodeReference):
 class Prior(RandomVariable):
     """A parameter node of an ELFI graph."""
 
-    def __init__(self, distribution, *params, size=None, **kwargs):
+    def __init__(self, distribution, *params, **kwargs):
         """Initialize a Prior.
 
         Parameters
@@ -880,6 +895,8 @@ class Prior(RandomVariable):
         Scipy distributions: https://docs.scipy.org/doc/scipy-0.19.0/reference/stats.html
 
         """
+        size = kwargs.pop('size', None)
+
         super(Prior, self).__init__(distribution, *params, size=size, **kwargs)
         self['_parameter'] = True
 

@@ -1,5 +1,6 @@
 """This module contains functions for interactive ("iterative") plotting."""
 
+from __future__ import division
 import logging
 
 import matplotlib.pyplot as plt

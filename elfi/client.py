@@ -1,5 +1,6 @@
 """This module contains the base client API and batch handler."""
 
+from __future__ import division
 import importlib
 import logging
 from collections import OrderedDict
@@ -182,7 +183,7 @@ class BatchHandler:
         return self.client.num_cores
 
 
-class ClientBase:
+class ClientBase(object):
     """Client api for serving multiple simultaneous inferences."""
 
     def apply(self, kallable, *args, **kwargs):

@@ -5,7 +5,7 @@ Owen, J., Wilkinson, D. and Gillespie, C. (2015) Likelihood free inference for
    Markov processes: a comparison. Statistical Applications in Genetics and
    Molecular Biology, 14(2).
 """
-
+from __future__ import absolute_import, division, print_function
 import logging
 from functools import partial
 
@@ -28,10 +28,10 @@ def lotka_volterra(r1, r2, r3, prey_init=50, predator_init=100, sigma=0., n_obs=
     The system is solved using the Direct method.
 
     Gillespie, D. T. (1977) Exact stochastic simulation of coupled chemical reactions.
-        The Journal of Physical Chemistry 81 (25), 2340–2361.
+        The Journal of Physical Chemistry 81 (25), 2340-2361.
     Lotka, A. J. (1925) Elements of physical biology. Williams & Wilkins Baltimore.
     Volterra, V. (1926) Fluctuations in the abundance of a species considered mathematically.
-        Nature 118, 558–560.
+        Nature 118, 558-560.
 
 
     Parameters

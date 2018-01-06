@@ -1,4 +1,5 @@
 """This module contains common inference methods."""
+from __future__ import division
 
 __all__ = ['Rejection', 'SMC', 'BayesianOptimization', 'BOLFI']
 
@@ -29,7 +30,7 @@ logger = logging.getLogger(__name__)
 # TODO: refactor the plotting functions
 
 
-class ParameterInference:
+class ParameterInference(object):
     """A base class for parameter inference methods.
 
     Attributes
@@ -231,7 +232,7 @@ class ParameterInference:
         """
         raise NotImplementedError
 
-    def infer(self, *args, vis=None, **kwargs):
+    def infer(self, *args, **kwargs):
         """Set the objective and start the iterate loop until the inference is finished.
 
         See the other arguments from the `set_objective` method.
@@ -241,6 +242,7 @@ class ParameterInference:
         result : Sample
 
         """
+        vis = kwargs.pop('vis', None)
         vis_opt = vis if isinstance(vis, dict) else {}
 
         self.set_objective(*args, **kwargs)
@@ -646,7 +648,7 @@ class SMC(Sampler):
         pop = self._extract_population()
         return SmcSample(
             outputs=pop.outputs,
-            populations=self._populations.copy() + [pop],
+            populations=list(self._populations) + [pop],
             weights=pop.weights,
             threshold=pop.threshold,
             **self._extract_result_kwargs())
@@ -1128,7 +1130,7 @@ class BOLFI(BayesianOptimization):
     References
     ----------
     Gutmann M U, Corander J (2016). Bayesian Optimization for Likelihood-Free Inference
-    of Simulator-Based Statistical Models. JMLR 17(125):1−47, 2016.
+    of Simulator-Based Statistical Models. JMLR 17(125):1-47, 2016.
     http://jmlr.org/papers/v17/15-017.html
 
     """
@@ -1184,7 +1186,7 @@ class BOLFI(BayesianOptimization):
                algorithm='nuts',
                n_evidence=None,
                **kwargs):
-        r"""Sample the posterior distribution of BOLFI.
+        """Sample the posterior distribution of BOLFI.
 
         Here the likelihood is defined through the cumulative density function
         of the standard normal distribution:

@@ -1,5 +1,5 @@
 """Implementations of Gaussian noise example models."""
-
+from __future__ import division
 from functools import partial
 
 import numpy as np
@@ -35,7 +35,7 @@ def gauss(mu, sigma, n_obs=50, batch_size=1, random_state=None):
     return y_obs
 
 
-def gauss_nd_mean(*mu, cov_matrix, n_obs=15, batch_size=1, random_state=None):
+def gauss_nd_mean(*mu, **kwargs):
     """Sample an n-D Gaussian distribution.
 
     Parameters
@@ -54,6 +54,11 @@ def gauss_nd_mean(*mu, cov_matrix, n_obs=15, batch_size=1, random_state=None):
         n-D observations.
 
     """
+    cov_matrix = kwargs.pop('cov_matrix', None)
+    n_obs = kwargs.pop('n_obs', 15)
+    batch_size = kwargs.pop('batch_size', 1)
+    random_state = kwargs.pop('random_state', None)
+
     n_dim = len(mu)
 
     # Transforming the arrays' shape to be compatible with batching.
@@ -173,7 +178,7 @@ def ss_var(y):
     return ss
 
 
-def euclidean_multidim(*simulated, observed):
+def euclidean_multidim(*simulated, **kwargs):
     """Calculate the Euclidean distances merging data dimensions.
 
     The shape of the input arrays corresponds to (batch_size, dim_point).
@@ -187,7 +192,10 @@ def euclidean_multidim(*simulated, observed):
     -------
     array_like
 
-    """
+    """    
+
+    observed = kwargs.pop('observed', False)
+
     pts_sim = simulated[0]
     pts_obs = observed[0]
 

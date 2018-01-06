@@ -1,5 +1,5 @@
 """This module contains auxiliary functions for augmenting the ELFI graph."""
-
+from __future__ import division
 from functools import partial, reduce
 from operator import add, mul
 
