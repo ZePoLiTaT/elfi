@@ -890,4 +890,4 @@ class NpyArray:
             self.__init__(basename)
         else:
             self.fs = None
-            raise FileNotFoundError('Could not find the file {}'.format(filename))
+            raise Exception('Could not find the file {}'.format(filename))

@@ -73,7 +73,7 @@ class BolfiPosterior(object):
                 random_state=self.random_state)
             self.threshold = minval
             logger.info("Using optimized minimum value (%.4f) of the GP discrepancy mean "
-                        "function as a threshold" % (self.threshold))
+                        "function as a threshold. Min location was: %s" % (self.threshold, minloc))
 
     def rvs(self, size=None, random_state=None):
         """Sample the posterior.
@@ -239,14 +239,18 @@ class BolfiPosterior(object):
                 plt.plot(x, pd)
                 plt.xlim(mn, mx)
                 plt.ylim(min(pd) * 1.05, max(pd) * 1.05)
-                plt.show()
+                #plt.show()
 
             elif len(self.model.bounds) == 2:
                 x, y = np.meshgrid(
                     np.linspace(*self.model.bounds[0]), np.linspace(*self.model.bounds[1]))
                 z = (np.vectorize(lambda a, b: fun(np.array([a, b]))))(x, y)
-                plt.contour(x, y, z)
-                plt.show()
+
+                fig, ax = plt.subplots()
+                cnt=plt.contour(x, y, z)
+                fig.colorbar(cnt, ax=ax)
+
+                #plt.show()
 
             else:
                 raise NotImplementedError("Currently unsupported for dim > 2")
